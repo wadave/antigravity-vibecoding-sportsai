@@ -1,6 +1,7 @@
 import cv2
 import os
 
+
 def test_codec(codec, ext):
     filename = f"test_{codec}.{ext}"
     fourcc = cv2.VideoWriter_fourcc(*codec)
@@ -14,13 +15,14 @@ def test_codec(codec, ext):
         print(f"Codec {codec} ({ext}): FAILED")
         return False
 
+
 codecs = [
-    ('avc1', 'mp4'),
-    ('mp4v', 'mp4'),
-    ('vp80', 'webm'),
-    ('vp09', 'webm'),
-    ('MJPG', 'avi'),
-    ('THEO', 'ogv')
+    ("avc1", "mp4"),
+    ("mp4v", "mp4"),
+    ("vp80", "webm"),
+    ("vp09", "webm"),
+    ("MJPG", "avi"),
+    ("THEO", "ogv"),
 ]
 
 print("Testing OpenCV Codecs...")

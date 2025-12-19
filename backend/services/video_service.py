@@ -13,8 +13,6 @@
 # limitations under the License.
 
 import cv2
-import numpy as np
-import os
 import json
 
 
@@ -98,12 +96,35 @@ class VideoService:
         parsed_boxes = []
         for i in range(len(analysis_results)):
             boxes = []
+            text = analysis_results[i]
             try:
-                text = analysis_results[i]
+                # Clean up markdown
                 if "```json" in text:
                     text = text.split("```json")[1].split("```")[0]
-                boxes = json.loads(text)
-            except:
+                elif "```" in text:
+                    text = text.split("```")[1].split("```")[0]
+
+                boxes_data = json.loads(text)
+
+                # Validation
+                if isinstance(boxes_data, list):
+                    for item in boxes_data:
+                        if (
+                            isinstance(item, dict)
+                            and "box_2d" in item
+                            and "label" in item
+                        ):
+                            boxes.append(item)
+                        else:
+                            print(f"WARNING: Invalid item format in frame {i}: {item}")
+                else:
+                    print(
+                        f"WARNING: Expected list but got {type(boxes_data)} in frame {i}: {boxes_data}"
+                    )
+
+            except Exception as e:
+                print(f"ERROR: Failed to parse parsing JSON for frame {i}: {e}")
+                print(f"DEBUG: Raw text was: {text[:100]}...")
                 pass
             parsed_boxes.append(boxes)
 
@@ -125,24 +146,28 @@ class VideoService:
                     box_data = None
                     if j < len(current_boxes) and j < len(next_boxes):
                         # Interpolate
-                        b1 = current_boxes[j].get("box_2d")
-                        b2 = next_boxes[j].get("box_2d")
-                        if b1 and b2 and len(b1) == 4 and len(b2) == 4:
-                            interp_box = [
-                                int(b1[0] + (b2[0] - b1[0]) * progress),
-                                int(b1[1] + (b2[1] - b1[1]) * progress),
-                                int(b1[2] + (b2[2] - b1[2]) * progress),
-                                int(b1[3] + (b2[3] - b1[3]) * progress),
-                            ]
-                            label = current_boxes[j].get("label", "person")
-                            self._draw_box(frame, interp_box, label)
+                        if isinstance(current_boxes[j], dict) and isinstance(
+                            next_boxes[j], dict
+                        ):
+                            b1 = current_boxes[j].get("box_2d")
+                            b2 = next_boxes[j].get("box_2d")
+                            if b1 and b2 and len(b1) == 4 and len(b2) == 4:
+                                interp_box = [
+                                    int(b1[0] + (b2[0] - b1[0]) * progress),
+                                    int(b1[1] + (b2[1] - b1[1]) * progress),
+                                    int(b1[2] + (b2[2] - b1[2]) * progress),
+                                    int(b1[3] + (b2[3] - b1[3]) * progress),
+                                ]
+                                label = current_boxes[j].get("label", "person")
+                                self._draw_box(frame, interp_box, label)
                     elif j < len(current_boxes):
                         # Use current
-                        self._draw_box(
-                            frame,
-                            current_boxes[j].get("box_2d"),
-                            current_boxes[j].get("label", "person"),
-                        )
+                        if isinstance(current_boxes[j], dict):
+                            self._draw_box(
+                                frame,
+                                current_boxes[j].get("box_2d"),
+                                current_boxes[j].get("label", "person"),
+                            )
             else:
                 # Last sample or beyond, just use current
                 current_boxes = (
@@ -151,9 +176,12 @@ class VideoService:
                     else []
                 )
                 for box_data in current_boxes:
-                    self._draw_box(
-                        frame, box_data.get("box_2d"), box_data.get("label", "person")
-                    )
+                    if isinstance(box_data, dict):
+                        self._draw_box(
+                            frame,
+                            box_data.get("box_2d"),
+                            box_data.get("label", "person"),
+                        )
 
             processed_frames.append(frame)
         return processed_frames

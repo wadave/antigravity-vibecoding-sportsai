@@ -13,7 +13,7 @@ Build a sports video analysis web application.
 * **Frontend:** React, HTML, CSS, JavaScript (axios for API calls).
 * **Backend:** Python FastAPI (Standard REST API structure).
 * **AI SDK:** `google-genai` (Documentation: https://googleapis.github.io/python-genai/).
-Please use the model IDs as specified in the AI Configuration section.  
+Please use the model IDs as specified in the AI Configuration section.
 * **AI Configuration:**
     * Model IDs: `gemini-3-pro-preview` and `gemini-3-pro-image-preview`
     * Project: `dw-genai-dev`
@@ -54,12 +54,14 @@ The layout should use CSS Grid or Flexbox to create these 4 distinct sections (R
         * *Code Pattern to use for SDK:*
         ```python
         from google.genai import Client
+
         # Initialize client once globally or via dependency injection, not inside the loop
-        aclient = Client(vertexai=True, project='dw-genai-dev', location='global').aio
+        aclient = Client(vertexai=True, project="dw-genai-dev", location="global").aio
+
 
         async def analyze_frames(frames):
             # Example of async gathering
-            tasks = [aclient.models.generate_content(model='gemini-3-pro-preview', contents=f) for f in frames]
+            tasks = [aclient.models.generate_content(model="gemini-3-pro-preview", contents=f) for f in frames]
             responses = await asyncio.gather(*tasks)
             return responses
         ```
@@ -85,7 +87,3 @@ The layout should use CSS Grid or Flexbox to create these 4 distinct sections (R
 * **CORS:** Configure FastAPI to allow CORS from the React frontend port.
 * **Concurrency:** The video processing can take time. Use a loading spinner or progress bar on the Frontend while the `POST /analyze_video` request is pending.
 * **Error Handling:** Gracefully handle timeouts from the AI models.
-
-
-
-

@@ -1,7 +1,7 @@
 fastapi
-uvicorn
-google-genai
-opencv-python-headless
 google-cloud-storage
-python-multipart
+google-genai
 numpy
+opencv-python-headless
+python-multipart
+uvicorn

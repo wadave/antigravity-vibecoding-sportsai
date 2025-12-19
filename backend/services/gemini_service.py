@@ -16,7 +16,6 @@ from google.genai import types
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 
 PROJECT_ID = "dw-genai-dev"
 LOCATION = "global"
@@ -89,6 +88,12 @@ class GeminiService:
                 )
             )
         responses = await asyncio.gather(*tasks)
+
+        # Log raw responses for debugging
+        with open("gemini_debug.log", "a") as f:
+            for i, r in enumerate(responses):
+                f.write(f"DEBUG: Frame {i} response: {r.text}\n")
+
         return [r.text for r in responses]
 
     async def analyze_video_strategic(
@@ -100,14 +105,14 @@ class GeminiService:
             contents=[
                 part,
                 """
-            Analyze this sports video and provide a strategic summary. 
+            Analyze this sports video and provide a strategic summary.
             Identify one key frame where the player could improve their technique.
             Return a JSON object with the following fields:
             - summary: A strategic summary of the performance.
             - key_frame_timestamp: The timestamp (in seconds) of the key frame to improve.
             - improvement_box_2d: A bounding box [ymin, xmin, ymax, xmax] (0-1000 scale) identifying the area of improvement.
             - advice: Specific advice for that frame.
-            
+
             Ensure the response is valid JSON.
             """,
             ],

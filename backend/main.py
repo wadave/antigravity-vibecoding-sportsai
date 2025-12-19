@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import asyncio
 import json
 import os
 import uuid
@@ -53,7 +52,7 @@ async def get_file(blob_name: str, background_tasks: BackgroundTasks):
     if not os.path.exists(local_path):
         try:
             gcs_service.download_file(blob_name, local_path)
-        except Exception as e:
+        except Exception:
             raise HTTPException(status_code=404, detail="File not found")
 
     # Schedule cleanup after serving
@@ -102,7 +101,7 @@ async def get_header_info():
     # Handle text description caching (keep existing JSON cache for text)
     if os.path.exists(cache_file):
         try:
-            with open(cache_file, "r") as f:
+            with open(cache_file) as f:
                 data = json.load(f)
                 # Update icon_url in case it was a placeholder before
                 data["icon_url"] = icon_url
@@ -183,7 +182,7 @@ async def analyze_video(gcs_uri: str, file_id: str):
             )
 
         output_blob_name = f"processed/{file_id}/processed_video.webm"
-        output_gcs_uri = gcs_service.upload_file(local_output_path, output_blob_name)
+        gcs_service.upload_file(local_output_path, output_blob_name)
         output_signed_url = f"http://localhost:8000/files/{output_blob_name}"
 
         # Get strategic summary and visual advice
@@ -241,15 +240,15 @@ async def analyze_video(gcs_uri: str, file_id: str):
 async def get_readme():
     cache_file = "generated_readme.md"
     if os.path.exists(cache_file):
-        with open(cache_file, "r") as f:
+        with open(cache_file) as f:
             return {"content": f.read()}
 
     prompt = """
     Generate a comprehensive README.md for a Sports Video Analysis App.
     The app uses React (Vite) + Tailwind CSS for the frontend, and Python FastAPI for the backend.
-    It integrates OpenCV for video processing, Google Cloud Storage (GCS) for asset management, 
+    It integrates OpenCV for video processing, Google Cloud Storage (GCS) for asset management,
     and Google's Gemini Models (gemini-3-pro-preview, gemini-3-pro-image-preview) for AI analysis and image generation.
-    
+
     Include:
     1. App Description
     2. Basic Setup Instructions (using uv and npm)
@@ -273,7 +272,7 @@ async def get_architecture_image():
         readme_content = ""
         cache_file = "generated_readme.md"
         if os.path.exists(cache_file):
-            with open(cache_file, "r") as f:
+            with open(cache_file) as f:
                 readme_content = f.read()
         else:
             # Fallback if readme not yet generated

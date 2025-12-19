@@ -1,7 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
-from pydantic import BaseModel
-import uuid
-import os
+from fastapi import APIRouter, UploadFile, File
 
 router = APIRouter(prefix="/video", tags=["video"])
 

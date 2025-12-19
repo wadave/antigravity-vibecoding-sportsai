@@ -151,7 +151,7 @@ function App() {
             </button>
           ))}
         </nav>
-        
+
         {/* Upload Section in Sidebar */}
         <div className="p-3 border-t border-slate-800">
           <div
