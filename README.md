@@ -10,7 +10,7 @@ This application allows users to upload sports videos, analyze them using Google
 
 - Python 3.11+
 - Node.js 18+
-- Google Cloud CLI configured with access to the `dw-genai-dev` project.
+- Google Cloud CLI configured with access to the `your project id` project.
 - Authenticated with Google Cloud: `gcloud auth application-default login`
 
 ## Project Structure
