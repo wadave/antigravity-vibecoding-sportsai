@@ -210,12 +210,12 @@ class VideoService:
 
         # Determine codec based on extension or default to vp09 for webm
         if output_path.endswith(".webm"):
-            # Try vp09 (VP9) first, then vp80 (VP8)
-            fourcc = cv2.VideoWriter_fourcc(*"vp09")
+            # Try vp80 (VP8) first as it has better compatibility in some OpenCV builds
+            fourcc = cv2.VideoWriter_fourcc(*"vp80")
             out = cv2.VideoWriter(output_path, fourcc, fps, (w, h))
             if not out.isOpened():
-                print("WARNING: 'vp09' codec failed. Falling back to 'vp80'.")
-                fourcc = cv2.VideoWriter_fourcc(*"vp80")
+                print("WARNING: 'vp80' codec failed. Falling back to 'vp09'.")
+                fourcc = cv2.VideoWriter_fourcc(*"vp09")
                 out = cv2.VideoWriter(output_path, fourcc, fps, (w, h))
         else:
             # Default to avc1/mp4v for mp4

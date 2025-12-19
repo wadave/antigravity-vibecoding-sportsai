@@ -2,6 +2,10 @@
 
 This application allows users to upload sports videos, analyze them using Google's Gemini AI to detect players, and receive a strategic summary of the video content.
 
+## Architecture
+
+![Architecture](backend/assets/architecture_diagram.png)
+
 ## Prerequisites
 
 - Python 3.11+
