@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+google-genai
+opencv-python-headless
+google-cloud-storage
+python-multipart
+numpy
