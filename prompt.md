@@ -1,3 +1,6 @@
+**TODO: Replace with your project ID and bucket name, and then use the below updated prompt.**
+---
+
 ## Role
 Act as a generic Expert Full-Stack Engineer and Google Cloud Architect.
 
@@ -16,7 +19,7 @@ Build a sports video analysis web application.
 Please use the model IDs as specified in the AI Configuration section.
 * **AI Configuration:**
     * Model IDs: `gemini-3-pro-preview` and `gemini-3-pro-image-preview`
-    * Project: `dw-genai-dev`
+    * Project: `<your project id>`
     * Location: `global`
 * **Video Processing:** `opencv-python` (cv2) running on the backend.
 * **Storage:** `google-cloud-storage`.
@@ -29,7 +32,7 @@ The React frontend must use a sidebar with 3 Tabs: **Main Page**, **Read Me**, a
 * **UI:** A clean file dropzone for MP4 files (Max 100MB).
 * **Action:**
     1.  Frontend uploads file to Backend (FastAPI).
-    2.  Backend saves raw video to GCS bucket `dw-genai-dev-bucket` with prefix `uploads/{uuid}/`.
+    2.  Backend saves raw video to GCS bucket `<your bucket name>` with prefix `uploads/{uuid}/`.
     3.  Backend returns the GCS URI or signed URL to the frontend.
 ### Tab 1: Main Page
 The layout should use CSS Grid or Flexbox to create these 4 distinct sections (Rows):
@@ -56,7 +59,7 @@ The layout should use CSS Grid or Flexbox to create these 4 distinct sections (R
         from google.genai import Client
 
         # Initialize client once globally or via dependency injection, not inside the loop
-        aclient = Client(vertexai=True, project="dw-genai-dev", location="global").aio
+        aclient = Client(vertexai=True, project="<your project id>", location="global").aio
 
 
         async def analyze_frames(frames):
